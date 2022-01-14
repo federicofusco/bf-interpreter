@@ -5,4 +5,5 @@ typedef struct {
 
 } Object;
 
-int compile(char *location,Object *output);
+int validate (Object *object);
+int compile(char *location,Object *object);
