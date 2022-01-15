@@ -15,8 +15,6 @@ int main ( int argc, char* argv[] ) {
     compile ( argv[1], &program );
     interpret ( &program );
 
-    printf ( "\n" );
-    
     exit ( EXIT_SUCCESS );
 
 }

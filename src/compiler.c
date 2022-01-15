@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "stack.h"
 #include "compiler.h"
 
 /**
@@ -30,6 +31,7 @@ int validate ( Object* object ) {
             }
 
             default: {
+
                 break;
             }
 
@@ -111,28 +113,99 @@ int interpret ( Object* object ) {
             case '[': {
 
                 if ( *( object -> cell ) == 0 ) {
-                    while ( *( object -> current_instruction ) != ']' ) {
+
+                    int found_bracket = 0;
+                    while ( *( object -> current_instruction ) != '\0' ) {
+
+                        // Stops the loop
+                        if ( found_bracket ) {
+                            break;
+                        }
+                        
+                        switch ( *( object -> current_instruction ) ) {
+
+                            case '[': {
+                                
+                                // Adds instruction to the stack
+                                push_stack ( object -> stack, object -> current_instruction );
+                                break;
+                            }
+
+                            case ']': {
+
+                                // Removes the last instruction from the stack
+                                // If the stack if then empty, this is the corresponding bracket
+                                pop_stack ( object -> stack );
+                                if ( is_stack_empty ( object -> stack ) ) {
+                                    found_bracket = 1;
+                                }
+
+                                break;
+                            }
+
+                            default: {
+                                
+                                // Avoids comments and other characters
+                                break;
+                            }
+
+                        }
+
                         object -> current_instruction++;
+                        
                     }
-                    continue;
                 }
 
-                object -> pointer++;
-                object -> pointer = object -> current_instruction;
                 break;
-
             }
 
             case ']': {
 
                 if ( *( object -> cell ) != 0 ) {
 
-                    object -> current_instruction = object -> pointer;
-                    continue;
+                    int found_bracket = 0;
+                    while ( *( object -> current_instruction ) != '\0' ) {
+
+                        // Stops the loop
+                        if ( found_bracket ) {
+                            break;
+                        }
+                        
+                        switch ( *( object -> current_instruction ) ) {
+
+                            case ']': {
+
+                                // Adds instruction to stack
+                                push_stack ( object -> stack, object -> current_instruction );
+                                break;
+                            }
+
+                            case '[': {
+
+                                // Removes the last instruction from the stack
+                                // If the stack is empty, this is the corresponding bracket
+                                pop_stack ( object -> stack );
+                                if ( is_stack_empty ( object -> stack ) ) {
+                                    found_bracket = 1;
+                                }
+
+                                break;
+                            }
+
+                            default: {
+
+                                // Avoids comments and other characters
+                                break;
+                            }
+
+                        }
+
+                        object -> current_instruction--;
+
+                    }
+
                 }
 
-                *( object -> pointer ) = 0;
-                object -> pointer--;
                 break;
             }
 
@@ -195,15 +268,7 @@ int compile ( char* location, Object* object ) {
     object -> cell = object -> memory;
 
     // Allocates memory to the stack
-    object -> stack_size = 128;
-    object -> stack = malloc ( sizeof ( char* ) * object -> stack_size );
-    if ( object -> stack == NULL ) {
-
-        // Exits
-        printf ( "Error: Failed to allocate memory to stack!\n" );
-        exit ( EXIT_FAILURE );
-    }
-    object -> pointer = *( object -> stack );
+    object -> stack = create_stack ( 128 );
 
     // Checks the bracket count
     validate ( object );

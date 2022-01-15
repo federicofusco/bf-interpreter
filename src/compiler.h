@@ -1,3 +1,5 @@
+#include "stack.h"
+
 typedef struct {
 
     char* source;
@@ -8,9 +10,11 @@ typedef struct {
     char* cell;
     size_t memory_size;
 
-    char** stack;
-    char* pointer;
-    size_t stack_size;
+    Stack* stack;
+
+    // char** stack;
+    // char* pointer;
+    // size_t stack_size;
 
 } Object;
 
