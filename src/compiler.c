@@ -1,13 +1,21 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "compiler.h"
 
+/**
+ * Takes an object and checks that it contains correct syntax.
+ * This ignores comments
+ * 
+ * @param object A pointer to an object which should be checked
+ * @returns A 0 if the object contains correct syntax
+ */
 int validate ( Object* object ) {
 
     // Loops through the object
     int i, b = 0;
-    for ( i = 0; i < object -> size; i++ ) {
+    for ( i = 0; i < object -> source_size; i++ ) {
 
         switch ( object -> source[i] ) {
 
@@ -46,6 +54,104 @@ int validate ( Object* object ) {
 
 }
 
+/**
+ * Takes a validated object and executes it
+ *
+ * @param object A pointer to the object which should be executed
+ * @returns A 0 if the program executed correctly
+ */
+int interpret ( Object* object ) {
+
+    while ( *( object -> current_instruction ) != '\0' ) {
+
+        switch ( *( object -> current_instruction ) ) {
+
+            case '+': {
+
+                // Increments the current cell
+                *( object -> cell ) += 1;
+                break;
+            }
+
+            case '-': {
+
+                // Decrements the current cell
+                *( object -> cell ) -= 1;
+                break;
+            }
+
+            case '>': {
+
+                // Shifts the cell one to the right
+                object -> cell++;
+                break;
+            }
+
+            case '<': {
+
+                // Shifts the cell one over to the left
+                object -> cell--;
+                break;
+            }
+
+            case '.': {
+
+                // Prints the current cell's value
+                putchar ( *( object -> cell ) );
+                break;
+            }
+
+            case ',': {
+
+                // Get's a char from character input
+                *( object -> cell ) = getchar ();
+                break;
+            }
+
+            case '[': {
+
+                if ( *( object -> cell ) == 0 ) {
+                    while ( *( object -> current_instruction ) != ']' ) {
+                        object -> current_instruction++;
+                    }
+                    continue;
+                }
+
+                object -> pointer++;
+                object -> pointer = object -> current_instruction;
+                break;
+
+            }
+
+            case ']': {
+
+                if ( *( object -> cell ) != 0 ) {
+
+                    object -> current_instruction = object -> pointer;
+                    continue;
+                }
+
+                *( object -> pointer ) = 0;
+                object -> pointer--;
+                break;
+            }
+
+            default: {
+
+                // Avoids comments and other data
+                break;
+            }
+
+        }
+
+        object -> current_instruction++;
+
+    }
+
+    return 0;
+
+}
+
 int compile ( char* location, Object* object ) {
 
     // Checks if the file exists
@@ -59,24 +165,47 @@ int compile ( char* location, Object* object ) {
 
     // Gets the source size
     fseek ( source, 0ULL, SEEK_END );
-    object -> size = ftell ( source );
+    object -> source_size = ftell ( source );
     fseek ( source, 0ULL, SEEK_SET );
 
     // Copies the source file to the object source
-    object -> source = malloc ( sizeof ( char ) * ( object -> size + 1 ) );
-    if ( fread ( object -> source, object -> size, 1, source ) != 1 ) {
+    object -> source = malloc ( sizeof ( char ) * ( object -> source_size + 1 ) );
+    if ( fread ( object -> source, object -> source_size, 1, source ) != 1 ) {
 
         // Exits
-        printf ( "Error: Failed to read source\n" );
+        printf ( "Error: Failed to read object source\n" );
         exit ( EXIT_FAILURE );
     }
-
+    object -> current_instruction = object -> source;
 
     // Adds a null character at the end of the source
-    object -> source[object -> size] = 0;
-
+    object -> source[object -> source_size] = '\0';
     fclose ( source );
 
+    // Allocates memory to the object
+    object -> memory_size = 30000;
+    object -> memory = malloc ( sizeof ( char ) * object -> memory_size );
+    if ( object -> memory == NULL ) {
+
+        // Exits
+        printf ( "Error: Failed to allocate memory to object\n" );
+        exit ( EXIT_FAILURE );
+    }
+    memset ( object -> memory, 0, object -> memory_size );
+    object -> cell = object -> memory;
+
+    // Allocates memory to the stack
+    object -> stack_size = 128;
+    object -> stack = malloc ( sizeof ( char* ) * object -> stack_size );
+    if ( object -> stack == NULL ) {
+
+        // Exits
+        printf ( "Error: Failed to allocate memory to stack!\n" );
+        exit ( EXIT_FAILURE );
+    }
+    object -> pointer = *( object -> stack );
+
+    // Checks the bracket count
     validate ( object );
 
     return 0;
