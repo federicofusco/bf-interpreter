@@ -18,6 +18,7 @@ Stack* create_stack ( size_t size ) {
     stack -> top = -1;
     stack -> stack = malloc ( sizeof ( void* ) * stack -> size );
 
+	logf_verbose ( "Initialized stack of size %d", size );
     return stack;
 
 }
@@ -52,16 +53,11 @@ int is_stack_full ( Stack* stack ) {
 int push_stack ( Stack* stack, void* element ) {
 
     if ( is_stack_full ( stack ) ) {
-        log_warn ( "Attempted to push element to stack which is full!\n" );
+        log_warn ( "Attempted to push element to stack which is full!" );
 		return 0;
     }
 
-	// printf ( ">>> TOP: %d\n", stack -> top );
-
     stack -> stack[stack -> top++] = element;
-
-	// printf ( ">>> TOP: %d\n", stack -> top );
-
 	return 1;
     
 } 
@@ -75,7 +71,7 @@ int push_stack ( Stack* stack, void* element ) {
 void* pop_stack ( Stack* stack ) {
 
     if ( is_stack_empty ( stack ) ) {
-        log_warn ( "Attempted to pop element from empty stack!\n" );
+        log_warn ( "Attempted to pop element from empty stack!" );
 		return NULL;
     }
 

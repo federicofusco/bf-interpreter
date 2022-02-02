@@ -45,7 +45,7 @@ int validate ( Object* object ) {
 				} else {
 
 					// Extra ] found
-					logf_fatal ( "Unexpected token ']' at %d:%d\n", pos[0], pos[1] );
+					logf_fatal ( "Unexpected token ']' at %d:%d", pos[0], pos[1] );
 				}
 
                 break;
@@ -68,7 +68,7 @@ int validate ( Object* object ) {
 		int ln = (int) ( (unsigned long) stack -> stack[stack -> top - 1] >> 32UL );
 		int col =  (int) ( (unsigned long) stack -> stack[stack -> top - 1] << 32UL >> 32UL );
 
-        logf_fatal ( "Unmatched token '[' at %d:%d\n", ln, col );
+        logf_fatal ( "Unmatched token '[' at %d:%d", ln, col );
 	}
 
 	// Resets the current instruction
@@ -254,26 +254,29 @@ int compile ( char* location, Object* object ) {
     if ( source == NULL ) {
 
         // Exits
-        logf_fatal ( "Failed to open file at \"%s\"\n", location );
-    }
+        logf_fatal ( "Failed to open source at \"%s\"", location );
+	}
 
     // Gets the source size
     fseek ( source, 0ULL, SEEK_END );
     object -> source_size = ftell ( source );
     fseek ( source, 0ULL, SEEK_SET );
+	logf_verbose ( "Opened source file \"%s\"", location );
+
 
     // Copies the source file to the object source
     object -> source = malloc ( sizeof ( char ) * ( object -> source_size + 1 ) );
     if ( fread ( object -> source, object -> source_size, 1, source ) != 1 ) {
 
         // Exits
-        log_fatal ( "Failed to read object source\n" );
+        log_fatal ( "Failed to read object source" );
     }
     object -> current_instruction = object -> source;
 
     // Adds a null character at the end of the source
     object -> source[object -> source_size] = '\0';
     fclose ( source );
+	log_verbose ( "Copied source file to the object source" );
 
     // Allocates memory to the object
     object -> memory_size = 30000;
@@ -281,13 +284,15 @@ int compile ( char* location, Object* object ) {
     if ( object -> memory == NULL ) {
 
         // Exits
-        log_fatal ( "Failed to allocate memory to object\n" );
+        log_fatal ( "Failed to allocate memory to object" );
     }
     memset ( object -> memory, 0, object -> memory_size );
     object -> cell = object -> memory;
+	log_verbose ( "Allocated memory to the object" );
 
     // Allocates memory to the stack
     object -> stack = create_stack ( 128 );
+	log_verbose ( "Allocated memory to object stack" );
 
     // Checks the bracket count
 	return validate ( object );

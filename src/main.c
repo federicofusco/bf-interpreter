@@ -6,6 +6,8 @@
 #include "stack.h"
 #include "compiler.h"
 
+extern int verbose_enabled;
+
 int main ( int argc, char* argv[] ) {
 
     // Checks the amount of arguments is correct
@@ -13,6 +15,19 @@ int main ( int argc, char* argv[] ) {
         logf_fatal ( "./bf [COMMAND] [OPTIONS] [FILE]\n" );
     }
 
+	// Iterates through the options given (if any)
+	int x = 1;
+	while ( x < argc ) {
+		if ( !strcmp ( argv[x], "-v" ) ) {
+
+			// Verbose is enabled
+			verbose_enabled = 1;
+		}
+
+		x++;
+	}
+
+	// Executes the commands given
 	if ( !strcmp ( argv[1], "run" ) ) {
 		
 		// Creates and compiles the program
@@ -22,6 +37,7 @@ int main ( int argc, char* argv[] ) {
 		if ( *( argv[argc - 1] ) != '-' ) { 
 
 			compile ( argv[argc - 1], &program );
+			log_verbose ( "Compiled program" );
 		} else {
 
 			log_fatal ( "No valid script name found!\n" );

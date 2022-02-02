@@ -7,5 +7,7 @@ void logf_warn(char *warning, ...);
 void log_warn(char *warning);
 void logf_info(char *info, ...);
 void log_info(char *info);
+void logf_verbose(char *info, ...);
+void log_verbose(char* info);
 
 #endif
