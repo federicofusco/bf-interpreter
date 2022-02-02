@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <limits.h>
 
 #include "stack.h"
+#include "log.h"
 
 /**
  * Creates a stack with a given size
@@ -14,7 +16,7 @@ Stack* create_stack ( size_t size ) {
     Stack* stack = malloc ( sizeof ( Stack* ) );
     stack -> size = size;
     stack -> top = -1;
-    stack -> stack = malloc ( sizeof ( char* ) * stack -> size );
+    stack -> stack = malloc ( sizeof ( void* ) * stack -> size );
 
     return stack;
 
@@ -45,17 +47,22 @@ int is_stack_full ( Stack* stack ) {
  *
  * @param stack The stack with should recieve the element
  * @param element The element which should be added to the stack
+ * @returns 1 on success, 0 in case of errors
  */
-void push_stack ( Stack* stack, char* element ) {
+int push_stack ( Stack* stack, void* element ) {
 
     if ( is_stack_full ( stack ) ) {
-
-        // Exits
-        printf ( "Error: Attempted to push element to stack which is full!\n" );
-        exit ( EXIT_FAILURE );
+        log_warn ( "Attempted to push element to stack which is full!\n" );
+		return 0;
     }
 
+	// printf ( ">>> TOP: %d\n", stack -> top );
+
     stack -> stack[stack -> top++] = element;
+
+	// printf ( ">>> TOP: %d\n", stack -> top );
+
+	return 1;
     
 } 
 
@@ -65,13 +72,11 @@ void push_stack ( Stack* stack, char* element ) {
  * @param stack The stack from which the last element should be removed
  * @returns The last element of the stack
  */
-char* pop_stack ( Stack* stack ) {
+void* pop_stack ( Stack* stack ) {
 
     if ( is_stack_empty ( stack ) ) {
-
-        // Exits
-        printf ( "Error: Attempted to pop element from empty stack!\n" );
-        exit ( EXIT_FAILURE );
+        log_warn ( "Attempted to pop element from empty stack!\n" );
+		return NULL;
     }
 
     return stack -> stack[stack -> top--];

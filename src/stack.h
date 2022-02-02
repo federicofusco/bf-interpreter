@@ -4,7 +4,7 @@
 typedef struct {
 
     int top;
-    char** stack;
+    void** stack;
     size_t size;
 
 } Stack;
@@ -12,7 +12,7 @@ typedef struct {
 Stack* create_stack(size_t size);
 int is_stack_empty(Stack* stack);
 int is_stack_full(Stack* stack);
-void push_stack(Stack* stack,char* element);
-char* pop_stack(Stack* stack);
+int push_stack(Stack* stack,void* element);
+void* pop_stack(Stack* stack);
 
 #endif

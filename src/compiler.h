@@ -1,3 +1,6 @@
+#ifndef COMPILER_H
+#define COMPILER_H
+
 #include "stack.h"
 
 typedef struct {
@@ -18,3 +21,5 @@ typedef struct {
 int validate(Object *object);
 int interpret(Object *object);
 int compile(char *location,Object *object);
+
+#endif

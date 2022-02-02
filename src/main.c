@@ -2,14 +2,15 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "log.h"
+#include "stack.h"
 #include "compiler.h"
 
 int main ( int argc, char* argv[] ) {
 
     // Checks the amount of arguments is correct
     if ( argc < 3 ) {
-        printf ( "Usage: ./bf [COMMAND] [OPTIONS] [FILE]\n" );
-        exit ( EXIT_FAILURE );
+        logf_fatal ( "./bf [COMMAND] [OPTIONS] [FILE]\n" );
     }
 
 	if ( !strcmp ( argv[1], "run" ) ) {
@@ -23,8 +24,7 @@ int main ( int argc, char* argv[] ) {
 			compile ( argv[argc - 1], &program );
 		} else {
 
-			printf ( "Error: No valid script name found!\n" );
-			exit ( EXIT_FAILURE );
+			log_fatal ( "No valid script name found!\n" );
 		}
 		
 		// Runs the program
@@ -38,8 +38,7 @@ int main ( int argc, char* argv[] ) {
 		// Run with debug enabled
 	} else {
 
-		printf ( "Error: Unknown command \"%s\"\n", argv[1] );
-		exit ( EXIT_FAILURE );
+		logf_fatal ( "Error: Unknown command \"%s\"\n", argv[1] );
 	}
 
 }

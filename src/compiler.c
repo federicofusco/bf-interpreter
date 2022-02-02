@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "log.h"
 #include "stack.h"
 #include "compiler.h"
 
@@ -16,8 +17,7 @@ int validate ( Object* object ) {
 
 	Stack* stack = create_stack ( object -> source_size );
 
-	int pos[2]      = { 1, 0 };
-	int last_pos[2] = { 1, 0 };
+	int pos[2] = { 1, 0 };
 
     // Loops through the object
 	while ( *( object -> current_instruction ) != '\0' ) {
@@ -32,9 +32,9 @@ int validate ( Object* object ) {
 
 			case '[': {
 
-				push_stack ( stack, object -> current_instruction );
-				last_pos[0] = pos[0];
-				last_pos[1] = pos[1];
+				unsigned long nPos = ( (unsigned long) pos[0] ) << 32 | ( (unsigned long) pos[1] ); 
+
+				push_stack ( stack, (void*) nPos );
                 break;
             }
 
@@ -45,8 +45,7 @@ int validate ( Object* object ) {
 				} else {
 
 					// Extra ] found
-					printf ( "Error: Unexpected token ']' at %d:%d\n", pos[0], pos[1] );
-        			return 1;
+					logf_fatal ( "Unexpected token ']' at %d:%d\n", pos[0], pos[1] );
 				}
 
                 break;
@@ -66,8 +65,10 @@ int validate ( Object* object ) {
 	if ( !is_stack_empty ( stack ) ) {
 
 		// Extra [ found
-        printf ( "Error: Unmatched token '[' at %d:%d\n", last_pos[0], last_pos[1] );
-        return 1;
+		int ln = (int) ( (unsigned long) stack -> stack[stack -> top - 1] >> 32UL );
+		int col =  (int) ( (unsigned long) stack -> stack[stack -> top - 1] << 32UL >> 32UL );
+
+        logf_fatal ( "Unmatched token '[' at %d:%d\n", ln, col );
 	}
 
 	// Resets the current instruction
@@ -253,8 +254,7 @@ int compile ( char* location, Object* object ) {
     if ( source == NULL ) {
 
         // Exits
-        printf ( "Error: Failed to open file at \"%s\"\n", location );
-        exit ( EXIT_FAILURE );
+        logf_fatal ( "Failed to open file at \"%s\"\n", location );
     }
 
     // Gets the source size
@@ -267,8 +267,7 @@ int compile ( char* location, Object* object ) {
     if ( fread ( object -> source, object -> source_size, 1, source ) != 1 ) {
 
         // Exits
-        printf ( "Error: Failed to read object source\n" );
-        exit ( EXIT_FAILURE );
+        log_fatal ( "Failed to read object source\n" );
     }
     object -> current_instruction = object -> source;
 
@@ -282,8 +281,7 @@ int compile ( char* location, Object* object ) {
     if ( object -> memory == NULL ) {
 
         // Exits
-        printf ( "Error: Failed to allocate memory to object\n" );
-        exit ( EXIT_FAILURE );
+        log_fatal ( "Failed to allocate memory to object\n" );
     }
     memset ( object -> memory, 0, object -> memory_size );
     object -> cell = object -> memory;
