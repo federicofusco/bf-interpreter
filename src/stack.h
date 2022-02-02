@@ -11,6 +11,7 @@ typedef struct {
 
 Stack* create_stack(size_t size);
 int is_stack_empty(Stack* stack);
+int is_stack_full(Stack* stack);
 void push_stack(Stack* stack,char* element);
 char* pop_stack(Stack* stack);
 

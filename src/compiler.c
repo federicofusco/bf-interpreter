@@ -16,14 +16,25 @@ int validate ( Object* object ) {
 
 	Stack* stack = create_stack ( object -> source_size );
 
+	int pos[2]      = { 1, 0 };
+	int last_pos[2] = { 1, 0 };
+
     // Loops through the object
 	while ( *( object -> current_instruction ) != '\0' ) {
+
+		// Updates the line and col count
+		if ( *( object -> current_instruction ) == '\n' ) {
+			pos[0]++;
+			pos[1] = 0;
+		}
 
 		switch ( *( object -> current_instruction ) ) {
 
 			case '[': {
-                
+
 				push_stack ( stack, object -> current_instruction );
+				last_pos[0] = pos[0];
+				last_pos[1] = pos[1];
                 break;
             }
 
@@ -34,7 +45,7 @@ int validate ( Object* object ) {
 				} else {
 
 					// Extra ] found
-					printf ( "Error: Unexpected token ']'\n" );
+					printf ( "Error: Unexpected token ']' at %d:%d\n", pos[0], pos[1] );
         			return 1;
 				}
 
@@ -48,13 +59,14 @@ int validate ( Object* object ) {
 		}
 
 		object -> current_instruction++;
+		pos[1]++;
 
 	}
 
 	if ( !is_stack_empty ( stack ) ) {
 
 		// Extra [ found
-        printf ( "Error: Expected token ']'\n" );
+        printf ( "Error: Unmatched token '[' at %d:%d\n", last_pos[0], last_pos[1] );
         return 1;
 	}
 
