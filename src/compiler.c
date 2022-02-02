@@ -12,47 +12,56 @@
  * @param object A pointer to an object which should be checked
  * @returns A 0 if the object contains correct syntax
  */
-int validate ( Object* object ) {
+int validate ( Object* object ) { 
+
+	Stack* stack = create_stack ( object -> source_size );
 
     // Loops through the object
-    int i, b = 0;
-    for ( i = 0; i < object -> source_size; i++ ) {
+	while ( *( object -> current_instruction ) != '\0' ) {
 
-        switch ( object -> source[i] ) {
+		switch ( *( object -> current_instruction ) ) {
 
-            case '[': {
-                b++;
+			case '[': {
+                
+				push_stack ( stack, object -> current_instruction );
                 break;
             }
 
             case ']': {
-                b--;
+
+				if ( !is_stack_empty ( stack ) ) {
+                	pop_stack ( stack );
+				} else {
+
+					// Extra ] found
+					printf ( "Error: Unexpected token ']'\n" );
+        			return 1;
+				}
+
                 break;
             }
 
             default: {
-
                 break;
             }
 
-        }
+		}
 
-    }
+		object -> current_instruction++;
 
-    // Checks if brackets match up
-    if ( b < 0 ) {
+	}
 
-        // Exits
-        printf ( "Error: Unexpected token ']'\n" );
-        exit ( EXIT_FAILURE );
-    } else if ( b > 0 ) {
+	if ( !is_stack_empty ( stack ) ) {
 
-        // Exits
+		// Extra [ found
         printf ( "Error: Expected token ']'\n" );
-        exit ( EXIT_FAILURE );
-    }
+        return 1;
+	}
 
-    return 0;
+	// Resets the current instruction
+	object -> current_instruction = object -> source;
+
+	return 0;
 
 }
 
@@ -271,8 +280,6 @@ int compile ( char* location, Object* object ) {
     object -> stack = create_stack ( 128 );
 
     // Checks the bracket count
-    validate ( object );
-
-    return 0;
+	return validate ( object );
 
 }

@@ -31,6 +31,16 @@ int is_stack_empty ( Stack* stack ) {
 }
 
 /**
+ * Return whether or not the given stack is full
+ *
+ * @param stack The stack which should be checked
+ * @returns 1 if the stack if full, 0 if it's not 
+ */
+int is_stack_full ( Stack* stack ) {
+	return stack -> top == stack -> size - 1;
+}
+
+/**
  * Adds an element to the stack
  *
  * @param stack The stack with should recieve the element
@@ -38,7 +48,7 @@ int is_stack_empty ( Stack* stack ) {
  */
 void push_stack ( Stack* stack, char* element ) {
 
-    if ( stack -> top == stack -> size - 1 ) {
+    if ( is_stack_full ( stack ) ) {
 
         // Exits
         printf ( "Error: Attempted to push element to stack which is full!\n" );

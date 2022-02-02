@@ -12,10 +12,6 @@ typedef struct {
 
     Stack* stack;
 
-    // char** stack;
-    // char* pointer;
-    // size_t stack_size;
-
 } Object;
 
 
