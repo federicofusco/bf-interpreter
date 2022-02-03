@@ -43,9 +43,7 @@ void log_cells ( Object* object ) {
 		if ( *( object -> current_instruction ) == '+' ||
 			 *( object -> current_instruction ) == '-' ||
 			 *( object -> current_instruction ) == '>' ||
-			 *( object -> current_instruction ) == '<' ||
-			 *( object -> current_instruction ) == '[' ||
-			 *( object -> current_instruction ) == ']' ) {
+			 *( object -> current_instruction ) == '<' ) {
 			
 			// Prints the current current_instruction
 			printf ( "(%c): ", *( object -> current_instruction ) );
@@ -72,16 +70,24 @@ void log_cells ( Object* object ) {
 
 				}
 
-			}
+			} 
 
 			printf ( "\n" );
+		} else if ( *( object -> current_instruction ) == ']' ) {
+
+			// Closing Bracket
+			*( object -> cell ) != 0 ? logf_yellow ( "(]): Jumping backward\n" ) : logf_yellow ( "(]): Incrementing pointer\n" );
+		} else if ( *( object -> current_instruction ) == '[' ) {
+			
+			// Opening Bracket
+			*( object -> cell ) == 0 ? logf_yellow ( "([): Jumping forward\n" ) : logf_yellow ( "([): Incrementing pointer\n");
 		} else if ( *( object -> current_instruction ) == '.' ) {
 
-			// Logs STDOUT
+			// STDOUT
 			logf_green ( "(.): %c\n", *( object -> cell ) );
 		} else if ( *( object -> current_instruction ) == ',' ) {
 
-			// Logs STDIN
+			// STDIN
 			logf_green ( "(,): %c\n", *( object -> cell ) );
 		}
 

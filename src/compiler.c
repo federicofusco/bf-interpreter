@@ -91,6 +91,9 @@ int interpret ( Object* object ) {
 
     while ( *( object -> current_instruction ) != '\0' ) {
 
+		// Debug
+		log_cells ( object );
+
         switch ( *( object -> current_instruction ) ) {
 
             case '+': {
@@ -245,9 +248,6 @@ int interpret ( Object* object ) {
             }
 
         }
-
-		// Debug
-		log_cells ( object );
 
         object -> current_instruction++;
 
