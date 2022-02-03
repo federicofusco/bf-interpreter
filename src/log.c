@@ -5,6 +5,13 @@
 
 int verbose_enabled = 0;
 
+/*
+ *    RED => ERROR
+ * YELLOW => WARNING
+ *  GREEN => INFO/VERBOSE
+ *   CYAN => DEBUG
+ */
+
 /**
  * Logs a given string in bold red text
  *

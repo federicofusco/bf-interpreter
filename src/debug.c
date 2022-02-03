@@ -55,6 +55,23 @@ void log_cells ( Object* object ) {
 				int val = *( object -> memory + x );
 
 				if ( val == 0 ) {
+
+					if ( object -> cell == object -> memory + x ) {
+						
+						if ( z_count > 0 ) {
+
+							// Displays the cell placeholder
+							log_cell_placeholder ( &z_count );
+						}
+
+						// Displays in cyan if the cell is the current cell
+						if ( object -> cell == object -> memory + x ) {
+							logf_cyan ( "[%d]", val );
+							continue;
+						}
+
+					}
+
 					z_count++;
 					continue;
 				} else {
@@ -63,6 +80,12 @@ void log_cells ( Object* object ) {
 
 						// Displays the cell placeholder
 						log_cell_placeholder ( &z_count );
+					}
+
+					// Displays in cyan if the cell is the current cell
+					if ( object -> cell == object -> memory + x ) {
+						logf_cyan ( "[%d]", val );
+						continue;
 					}
 
 					// Displays the cell
@@ -76,19 +99,19 @@ void log_cells ( Object* object ) {
 		} else if ( *( object -> current_instruction ) == ']' ) {
 
 			// Closing Bracket
-			*( object -> cell ) != 0 ? logf_yellow ( "(]): Jumping backward\n" ) : logf_yellow ( "(]): Incrementing pointer\n" );
+			*( object -> cell ) != 0 ? log_cyan ( "(]): Jumping backward\n" ) : log_cyan ( "(]): Incrementing pointer\n" );
 		} else if ( *( object -> current_instruction ) == '[' ) {
 			
 			// Opening Bracket
-			*( object -> cell ) == 0 ? logf_yellow ( "([): Jumping forward\n" ) : logf_yellow ( "([): Incrementing pointer\n");
+			*( object -> cell ) == 0 ? log_cyan ( "([): Jumping forward\n" ) : log_cyan ( "([): Incrementing pointer\n");
 		} else if ( *( object -> current_instruction ) == '.' ) {
 
 			// STDOUT
-			logf_green ( "(.): %c\n", *( object -> cell ) );
+			logf_cyan ( "(.): %c\n", *( object -> cell ) );
 		} else if ( *( object -> current_instruction ) == ',' ) {
 
 			// STDIN
-			logf_green ( "(,): %c\n", *( object -> cell ) );
+			logf_cyan ( "(,): %c\n", *( object -> cell ) );
 		}
 
 	}
