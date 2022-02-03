@@ -2,9 +2,12 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "debug.h"
 #include "log.h"
 #include "stack.h"
 #include "compiler.h"
+
+extern int debug_enabled;
 
 /**
  * Takes an object and checks that it contains correct syntax.
@@ -121,6 +124,10 @@ int interpret ( Object* object ) {
             case '.': {
 
                 // Prints the current cell's value
+				if ( debug_enabled ) {
+					break;
+				}
+
                 putchar ( *( object -> cell ) );
                 break;
             }
@@ -238,6 +245,9 @@ int interpret ( Object* object ) {
             }
 
         }
+
+		// Debug
+		log_cells ( object );
 
         object -> current_instruction++;
 

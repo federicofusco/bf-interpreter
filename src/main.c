@@ -7,6 +7,7 @@
 #include "compiler.h"
 
 extern int verbose_enabled;
+extern int debug_enabled;
 
 int main ( int argc, char* argv[] ) {
 
@@ -51,7 +52,25 @@ int main ( int argc, char* argv[] ) {
 		// Display help prompt
 	} else if ( !strcmp ( argv[1], "debug" ) ) {
 
-		// Run with debug enabled
+		// Enables debugging
+		debug_enabled = 1;
+
+		// Creates and compiles the program
+		Object program;
+
+		// Finds the script to compile 
+		if ( *( argv[argc - 1] ) != '-' ) { 
+
+			compile ( argv[argc - 1], &program );
+			log_verbose ( "Compiled program" );
+		} else {
+
+			log_fatal ( "No valid script name found!\n" );
+		}
+		
+		// Runs the program
+		interpret ( &program );
+
 	} else {
 
 		logf_fatal ( "Error: Unknown command \"%s\"\n", argv[1] );
