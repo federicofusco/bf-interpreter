@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 #include "debug.h"
 #include "log.h"
@@ -88,6 +89,11 @@ int validate ( Object* object ) {
  * @returns A 0 if the program executed correctly
  */
 int interpret ( Object* object ) {
+
+	// Calculates how logn it took to compile the source
+	clock_t execute_start, execute_end;
+	execute_start = clock();
+	log_verbose ( "Started execution" );
 
     while ( *( object -> current_instruction ) != '\0' ) {
 
@@ -241,6 +247,44 @@ int interpret ( Object* object ) {
                 break;
             }
 
+			case '@': {
+				if ( debug_enabled ) {
+
+					log_cyan ( "(@): " );
+					char instruction = getchar ();
+
+					// Determines what should be done
+					switch ( instruction ) {
+
+						// Go to next breakpoint or end of file
+						case '>': {
+
+							// Finds the next breakpoint
+							do {
+								object -> current_instruction++;
+							} while ( *( object -> current_instruction ) != '@' && *( object -> current_instruction ) != '\0' );
+
+							break;
+						}
+
+
+
+						// Go to previous breakpoint or beginning of file 
+						case '<': {
+							break;
+						}
+
+						// Continue
+						default: {
+							break;
+						}
+
+
+					}
+
+				}
+			}
+
             default: {
 
                 // Avoids comments and other data
@@ -253,11 +297,20 @@ int interpret ( Object* object ) {
 
     }
 
+	// Stops the clock and calculates how long it took to compile
+	execute_end = clock ();
+	logf_verbose ( "Executed in %f seconds", (double) (execute_end - execute_start) / CLOCKS_PER_SEC );
+
     return 0;
 
 }
 
 int compile ( char* location, Object* object ) {
+
+	// Calculates how logn it took to compile the source
+	clock_t compile_start, compile_end;
+	compile_start = clock();
+	log_verbose ( "Started compiling source" );
 
     // Checks if the file exists
     FILE* source = fopen ( location, "rb" );
@@ -301,8 +354,12 @@ int compile ( char* location, Object* object ) {
 	log_verbose ( "Allocated memory to the object" );
 
     // Allocates memory to the stack
-    object -> stack = create_stack ( 128 );
+    object -> stack = create_stack ( 5000 );
 	log_verbose ( "Allocated memory to object stack" );
+
+	// Stops the clock and calculates how long it took to compile
+	compile_end = clock ();
+	logf_verbose ( "Compiled source in %f seconds", (double) (compile_end - compile_start) / CLOCKS_PER_SEC );
 
     // Checks the bracket count
 	return validate ( object );

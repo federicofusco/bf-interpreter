@@ -38,7 +38,6 @@ int main ( int argc, char* argv[] ) {
 		if ( *( argv[argc - 1] ) != '-' ) { 
 
 			compile ( argv[argc - 1], &program );
-			log_verbose ( "Compiled program" );
 		} else {
 
 			log_fatal ( "No valid script name found!\n" );
@@ -62,7 +61,6 @@ int main ( int argc, char* argv[] ) {
 		if ( *( argv[argc - 1] ) != '-' ) { 
 
 			compile ( argv[argc - 1], &program );
-			log_verbose ( "Compiled program" );
 		} else {
 
 			log_fatal ( "No valid script name found!\n" );

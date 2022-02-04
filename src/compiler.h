@@ -9,8 +9,8 @@ typedef struct {
     char* current_instruction;
     size_t source_size;
 
-    char* memory;
-    char* cell;
+    unsigned char* memory;
+    unsigned char* cell;
     size_t memory_size;
 
     Stack* stack;

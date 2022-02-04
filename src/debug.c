@@ -111,7 +111,7 @@ void log_cells ( Object* object ) {
 		} else if ( *( object -> current_instruction ) == ',' ) {
 
 			// STDIN
-			logf_cyan ( "(,): %c\n", *( object -> cell ) );
+			logf_cyan ( "(,): %c", *( object -> cell ) );
 		}
 
 	}

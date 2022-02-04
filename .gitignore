@@ -1,4 +1,5 @@
 *.txt
 *.bf
+bf
 src/*.out
 src/vgcore.*
