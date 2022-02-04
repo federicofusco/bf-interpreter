@@ -11,7 +11,7 @@ int debug_enabled = 0;
  *
  * @param n The number of consecutive zeroes there are
  */
-void log_cell_placeholder ( int* n ) {
+void debug_placeholder ( int* n ) {
 
 	if ( debug_enabled ) {
 		if ( *n < 3 ) {
@@ -36,7 +36,7 @@ void log_cell_placeholder ( int* n ) {
  *
  * @param object The program object
  */
-void log_cells ( Object* object ) {
+void debug_cells ( Object* object ) {
 	if ( debug_enabled ) {
 
 		// Checks if the current_instruction uses STDIN/STDOUT
@@ -61,7 +61,7 @@ void log_cells ( Object* object ) {
 						if ( z_count > 0 ) {
 
 							// Displays the cell placeholder
-							log_cell_placeholder ( &z_count );
+							debug_placeholder ( &z_count );
 						}
 
 						// Displays in cyan if the cell is the current cell
@@ -79,7 +79,7 @@ void log_cells ( Object* object ) {
 					if ( z_count > 0 ) {
 
 						// Displays the cell placeholder
-						log_cell_placeholder ( &z_count );
+						debug_placeholder ( &z_count );
 					}
 
 					// Displays in cyan if the cell is the current cell
@@ -112,6 +112,63 @@ void log_cells ( Object* object ) {
 
 			// STDIN
 			logf_cyan ( "(,): %c", *( object -> cell ) );
+		}
+
+	}
+}
+
+/**
+ * Moves the pointer to the next or previous breakpoint
+ * based on user input
+ *
+ * @param object The program object
+ */
+void debug_breakpoint ( Object* object ) {
+	if ( debug_enabled ) {
+
+		// Gets the command
+		log_cyan ( "(@): " );
+		char command = getchar ();
+		
+		// Captures the newline given when entering the current command
+		getchar ();
+
+		// Determines what should be done
+		switch ( command ) {
+
+			// Go to next breakpoint or end of file
+			case '>': {
+
+				// Finds the next breakpoint
+				while ( *( object -> current_instruction + 1 ) != '@' && *( object -> current_instruction + 1 ) != '\0' ) {
+					object -> current_instruction++;
+				}
+
+				break;
+			}
+
+			// Go to previous breakpoint or beginning of file 
+			case '<': {
+
+				// Finds the previous breakpoint
+				while ( *( object -> current_instruction - 1 ) != '@' && *( object -> current_instruction - 1 ) != 0x00 ) {
+					object -> current_instruction--;
+				}
+
+				if ( *( object -> current_instruction - 1 ) == '@' ) {
+					object -> current_instruction -= 2;
+				}
+
+				break;
+			}
+
+			// Continue
+			default: {
+
+				// return current_instruction + 1;
+				break;
+			}
+
 		}
 
 	}

@@ -3,7 +3,8 @@
 
 #include "compiler.h"
 
-void log_cells(Object* object);
-void log_cell_placeholder(int* n);
+void debug_cells(Object* object);
+void debug_placeholder(int* n);
+void debug_breakpoint(Object* object);
 
 #endif

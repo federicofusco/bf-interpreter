@@ -98,7 +98,7 @@ int interpret ( Object* object ) {
     while ( *( object -> current_instruction ) != '\0' ) {
 
 		// Debug
-		log_cells ( object );
+		debug_cells ( object );
 
         switch ( *( object -> current_instruction ) ) {
 
@@ -248,41 +248,7 @@ int interpret ( Object* object ) {
             }
 
 			case '@': {
-				if ( debug_enabled ) {
-
-					log_cyan ( "(@): " );
-					char instruction = getchar ();
-
-					// Determines what should be done
-					switch ( instruction ) {
-
-						// Go to next breakpoint or end of file
-						case '>': {
-
-							// Finds the next breakpoint
-							do {
-								object -> current_instruction++;
-							} while ( *( object -> current_instruction ) != '@' && *( object -> current_instruction ) != '\0' );
-
-							break;
-						}
-
-
-
-						// Go to previous breakpoint or beginning of file 
-						case '<': {
-							break;
-						}
-
-						// Continue
-						default: {
-							break;
-						}
-
-
-					}
-
-				}
+				debug_breakpoint ( object );
 			}
 
             default: {
