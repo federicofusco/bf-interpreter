@@ -90,7 +90,7 @@ int validate ( Object* object ) {
  */
 int interpret ( Object* object ) {
 
-	// Calculates how logn it took to compile the source
+	// Calculates how long it took to interpret the source
 	clock_t execute_start, execute_end;
 	execute_start = clock();
 	log_verbose ( "Started execution" );
@@ -263,7 +263,7 @@ int interpret ( Object* object ) {
 
     }
 
-	// Stops the clock and calculates how long it took to compile
+	// Stops the clock and calculates how long it took to interpret
 	execute_end = clock ();
 	logf_verbose ( "Executed in %f seconds", (double) (execute_end - execute_start) / CLOCKS_PER_SEC );
 
