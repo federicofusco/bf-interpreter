@@ -12,7 +12,6 @@ int debug_enabled = 0;
  * @param n The number of consecutive zeroes there are
  */
 void debug_placeholder ( int* n ) {
-
 	if ( debug_enabled ) {
 		if ( *n < 3 ) {
 
@@ -46,7 +45,7 @@ void debug_cells ( Object* object ) {
 			 *( object -> current_instruction ) == '<' ) {
 			
 			// Prints the current current_instruction
-			printf ( "(%c): ", *( object -> current_instruction ) );
+			printf ( "(%c * %d): ", *( object -> current_instruction ), *( object -> current_instruction + 1 ) );
 
 			int z_count = 0;
 			for ( int x = 0; x < object -> memory_size; x++ ) {

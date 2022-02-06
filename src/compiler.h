@@ -17,9 +17,9 @@ typedef struct {
 
 } Object;
 
-
-int validate(Object *object);
-int interpret(Object *object);
-int compile(char *location,Object *object);
+int validate(Object* object);
+void optimize(Object* unoptimized_object);
+void compile(char* location);
+int interpret(Object* object);
 
 #endif

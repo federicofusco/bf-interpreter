@@ -30,22 +30,16 @@ int main ( int argc, char* argv[] ) {
 
 	// Executes the commands given
 	if ( !strcmp ( argv[1], "run" ) ) {
-		
-		// Creates and compiles the program
-		Object program;
 
 		// Finds the script to compile 
 		if ( *( argv[argc - 1] ) != '-' ) { 
 
-			compile ( argv[argc - 1], &program );
+			compile ( argv[argc - 1] );
 		} else {
 
 			log_fatal ( "No valid script name found!\n" );
 		}
 		
-		// Runs the program
-		interpret ( &program );
-
 	} else if ( !strcmp ( argv[1], "help" ) ) {
 
 		// Display help prompt
@@ -54,21 +48,15 @@ int main ( int argc, char* argv[] ) {
 		// Enables debugging
 		debug_enabled = 1;
 
-		// Creates and compiles the program
-		Object program;
-
 		// Finds the script to compile 
 		if ( *( argv[argc - 1] ) != '-' ) { 
 
-			compile ( argv[argc - 1], &program );
+			compile ( argv[argc - 1] );
 		} else {
 
 			log_fatal ( "No valid script name found!\n" );
 		}
 		
-		// Runs the program
-		interpret ( &program );
-
 	} else {
 
 		logf_fatal ( "Error: Unknown command \"%s\"\n", argv[1] );
