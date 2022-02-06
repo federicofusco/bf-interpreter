@@ -15,7 +15,7 @@ Stack* create_stack ( size_t size ) {
 
     Stack* stack = malloc ( sizeof ( Stack* ) );
     stack -> size = size;
-    stack -> top = -1;
+    stack -> top = 0;
     stack -> stack = malloc ( sizeof ( void* ) * stack -> size );
 
 	logf_verbose ( "Initialized stack of size %d", size );
@@ -30,7 +30,7 @@ Stack* create_stack ( size_t size ) {
  * @returns 1 if the stack is empty, 0 if it's not
  */
 int is_stack_empty ( Stack* stack ) {
-    return stack -> top == -1;
+    return stack -> top == 0;
 }
 
 /**
@@ -77,4 +77,8 @@ void* pop_stack ( Stack* stack ) {
 
     return stack -> stack[stack -> top--];
 
+}
+
+void destroy_stack ( Stack* stack ) {
+	free ( stack );
 }

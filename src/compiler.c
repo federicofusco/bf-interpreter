@@ -81,6 +81,7 @@ int validate ( Object* object ) {
 	object -> current_instruction = object -> source + 1;
 
 	log_verbose ( "Successfully validated source" );
+	destroy_stack ( stack );
 	return 0;
 
 }
@@ -161,7 +162,7 @@ void compile ( char* location ) {
 	}
 
     // Gets the source size
-    fseek ( source, 0ULL, SEEK_END );
+    fseek ( source, 0ULL, SEEK_END );  
     object -> source_size = ftell ( source );
     fseek ( source, 0ULL, SEEK_SET );
 	logf_verbose ( "Opened source file \"%s\"", location );
@@ -390,6 +391,8 @@ int interpret ( Object* object ) {
 	// Stops the clock and calculates how long it took to interpret
 	execute_end = clock ();
 	logf_verbose ( "Executed in %f seconds", (double) (execute_end - execute_start) / CLOCKS_PER_SEC );
+
+	destroy_stack ( object -> stack );
 
     return 0;
 

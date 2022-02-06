@@ -14,5 +14,6 @@ int is_stack_empty(Stack* stack);
 int is_stack_full(Stack* stack);
 int push_stack(Stack* stack,void* element);
 void* pop_stack(Stack* stack);
+void destroy_stack(Stack* stack);
 
 #endif
