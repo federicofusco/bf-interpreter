@@ -1,6 +1,8 @@
 #ifndef LOG_H
 #define LOG_H
 
+extern int verbose_enabled;
+
 void logf_fatal(char *error, ...);
 void log_fatal(char *error);
 void logf_warn(char *warning, ...);

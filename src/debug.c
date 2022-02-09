@@ -3,8 +3,6 @@
 #include "log.h"
 #include "debug.h"
 
-int debug_enabled = 0;
-
 /**
  * Logs a placeholder for 3 or more consecutive cells 
  * containing the value 0
@@ -55,7 +53,7 @@ void debug_cells ( Object* object ) {
 
 				if ( val == 0 ) {
 
-					if ( object -> cell == object -> memory + x ) {
+					if ( object -> current_cell == object -> memory + x ) {
 						
 						if ( z_count > 0 ) {
 
@@ -64,7 +62,7 @@ void debug_cells ( Object* object ) {
 						}
 
 						// Displays in cyan if the cell is the current cell
-						if ( object -> cell == object -> memory + x ) {
+						if ( object -> current_cell == object -> memory + x ) {
 							logf_cyan ( "[%d]", val );
 							continue;
 						}
@@ -82,7 +80,7 @@ void debug_cells ( Object* object ) {
 					}
 
 					// Displays in cyan if the cell is the current cell
-					if ( object -> cell == object -> memory + x ) {
+					if ( object -> current_cell == object -> memory + x ) {
 						logf_cyan ( "[%d]", val );
 						continue;
 					}
@@ -95,24 +93,46 @@ void debug_cells ( Object* object ) {
 			} 
 
 			printf ( "\n" );
-		} else if ( *( object -> current_instruction ) == ']' ) {
-
-			// Closing Bracket
-			*( object -> cell ) != 0 ? log_cyan ( "(]): Jumping backward\n" ) : log_cyan ( "(]): Incrementing pointer\n" );
-		} else if ( *( object -> current_instruction ) == '[' ) {
-			
-			// Opening Bracket
-			*( object -> cell ) == 0 ? log_cyan ( "([): Jumping forward\n" ) : log_cyan ( "([): Incrementing pointer\n");
 		} else if ( *( object -> current_instruction ) == '.' ) {
 
 			// STDOUT
-			logf_cyan ( "(.): %c\n", *( object -> cell ) );
+			logf_cyan ( "(.): %c\n", *( object -> current_cell ) );
 		} else if ( *( object -> current_instruction ) == ',' ) {
 
 			// STDIN
-			logf_cyan ( "(,): %c", *( object -> cell ) );
+			logf_cyan ( "(,): %c", *( object -> current_cell ) );
 		}
 
+	}
+}
+
+void debug_brackets ( Object* object ) {
+	if ( debug_enabled ) {
+		switch ( *( object -> current_instruction ) ) {
+
+			case '[': {
+				if ( *( object -> current_cell ) == 0 )
+					log_cyan ( "([): Jumping forward\n" );
+				else
+					log_cyan ( "([): Incrementing pointer\n");
+
+				break;
+			}
+
+			case ']': {
+				if ( *( object -> current_cell ) != 0 )
+					log_cyan ( "(]): Jumping backward\n" );
+				else
+					log_cyan ( "(]): Incrementing pointer\n" );
+
+				break;
+			}
+
+			default: {
+				break;
+			}
+
+		}
 	}
 }
 
@@ -140,7 +160,7 @@ void debug_breakpoint ( Object* object ) {
 
 				// Finds the next breakpoint
 				while ( *( object -> current_instruction + 1 ) != '@' && *( object -> current_instruction + 1 ) != '\0' ) {
-					object -> current_instruction++;
+					object -> current_instruction += 2;
 				}
 
 				break;
@@ -151,7 +171,7 @@ void debug_breakpoint ( Object* object ) {
 
 				// Finds the previous breakpoint
 				while ( *( object -> current_instruction - 1 ) != '@' && *( object -> current_instruction - 1 ) != 0x00 ) {
-					object -> current_instruction--;
+					object -> current_instruction -= 2;
 				}
 
 				if ( *( object -> current_instruction - 1 ) == '@' ) {

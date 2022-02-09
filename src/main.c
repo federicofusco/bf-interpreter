@@ -3,63 +3,62 @@
 #include <string.h>
 
 #include "log.h"
-#include "stack.h"
+#include "debug.h"
 #include "compiler.h"
 
-extern int verbose_enabled;
-extern int debug_enabled;
+int verbose_enabled = 0;
+int debug_enabled = 0;
+size_t memory_size = 30000;
 
 int main ( int argc, char* argv[] ) {
+	
+	if ( argc < 3 ) {
 
-    // Checks the amount of arguments is correct
-    if ( argc < 3 ) {
-        logf_fatal ( "./bf [COMMAND] [OPTIONS] [FILE]\n" );
-    }
-
-	// Iterates through the options given (if any)
-	int x = 1;
-	while ( x < argc ) {
-		if ( !strcmp ( argv[x], "-v" ) ) {
-
-			// Verbose is enabled
-			verbose_enabled = 1;
-		}
-
-		x++;
+		// Prints error and exits
+		log_fatal ( "Usage: ./bf [COMMAND] [OPTIONS] [FILE]!\nSee ./bf help to find out more" );
 	}
 
-	// Executes the commands given
+	// Loops through each argument
+	int x = 2;
+	while ( x < argc - 1 ) {
+		
+		// Determines which option it it
+		if ( !strcmp ( argv[x], "--verbose" ) ) {
+
+			// Enables verbose mode
+			verbose_enabled = 1;
+			x++;
+			continue;
+		} else if ( !strcmp ( argv[x], "--debug" ) ) {
+
+			// Enables debug mode
+			debug_enabled = 1;
+			x++;
+			continue;
+		} else if ( !strcmp ( argv[x], "--memory" ) ) {
+
+			// Specifies the memory size
+			memory_size = atoi ( argv[x + 1] );
+
+			x += 2;
+			continue;
+		}
+	}
+
+	// Executes the given command
 	if ( !strcmp ( argv[1], "run" ) ) {
 
-		// Finds the script to compile 
-		if ( *( argv[argc - 1] ) != '-' ) { 
+		// Finds the script to compile
+		if ( *( argv[argc - 1] ) != '-' ) {
 
-			compile ( argv[argc - 1] );
-		} else {
-
-			log_fatal ( "No valid script name found!\n" );
+			return compile ( argv[argc - 1] );
 		}
-		
-	} else if ( !strcmp ( argv[1], "help" ) ) {
 
-		// Display help prompt
-	} else if ( !strcmp ( argv[1], "debug" ) ) {
-
-		// Enables debugging
-		debug_enabled = 1;
-
-		// Finds the script to compile 
-		if ( *( argv[argc - 1] ) != '-' ) { 
-
-			compile ( argv[argc - 1] );
-		} else {
-
-			log_fatal ( "No valid script name found!\n" );
-		}
-		
+		log_fatal ( "No valid script found!" );
 	} else {
 
-		logf_fatal ( "Error: Unknown command \"%s\"\n", argv[1] );
+		// The given command doesn't exit
+		logf_fatal ( "Unknown command \"%s\"!", argv[1] );
 	}
 
 }

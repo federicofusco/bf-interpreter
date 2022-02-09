@@ -1,9 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
-#include "log.h"
 
-int verbose_enabled = 0;
+#include "log.h"
 
 /*
  *    RED => ERROR

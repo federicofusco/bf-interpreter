@@ -1,25 +1,13 @@
 #ifndef COMPILER_H
 #define COMPILER_H
 
-#include "stack.h"
+#include "object.h"
 
-typedef struct {
+extern size_t memory_size;
 
-    char* source;
-    char* current_instruction;
-    size_t source_size;
-
-    unsigned char* memory;
-    unsigned char* cell;
-    size_t memory_size;
-
-    Stack* stack;
-
-} Object;
-
-int validate(Object* object);
-void optimize(Object* unoptimized_object);
-void compile(char* location);
-int interpret(Object* object);
+int compile ( char* script_location );
+int validate ( Object* object );
+int optimize ( Object* object );
+int interpret ( Object* object );
 
 #endif
